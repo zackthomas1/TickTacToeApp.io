@@ -1,5 +1,8 @@
 .boxx{
     width: 200px;
-    height: 200px;
+    min-height: 175px;
+
+    max-width: 250px;
+    max-height: 250px;
 }
 

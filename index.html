@@ -12,37 +12,64 @@
 
     <h1 class="h1 display-1 text-center my-3">TicTacToe</h1>
 
-    <div id="border_container" class="container-fluid center w-75">
+    <div id="activePlayer" class="container m-2">
+        <p class="d-inline fs-4">Current Player: </p>
+        <p class="d-inline fs-4">X</p>
+    </div>
+
+    <div id="board_container" class="container center w-75">
         <div id="row_1" class="row ">
-            <div id="square_1" class="active col boxx border"> </div>
-            <div id="square_2" class="active col boxx border"> </div>
-            <div id="square_3" class="active col boxx border"> </div>
+            <div id="square_1" class="active col boxx border text-center display-1 px-0 py-5"> </div>
+            <div id="square_2" class="active col boxx border text-center display-1 px-0 py-5"> </div>
+            <div id="square_3" class="active col boxx border text-center display-1 px-0 py-5"> </div>
         </div>
     
         <div id="row_2" class="row">
-            <div id="square_4" class="active col boxx border"> </div>
-            <div id="square_5" class="active col boxx border"> </div>
-            <div id="square_6" class="active col boxx border"> </div>
+            <div id="square_4" class="active col boxx border text-center display-1 px-0 py-5"> </div>
+            <div id="square_5" class="active col boxx border text-center display-1 px-0 py-5"> </div>
+            <div id="square_6" class="active col boxx border text-center display-1 px-0 py-5"> </div>
         </div>
     
         <div id="row_3" class="row">
-            <div id="square_7" class="active col boxx border"> </div>
-            <div id="square_8" class="active col boxx border"> </div>
-            <div id="square_9" class="active col boxx border"> </div>
+            <div id="square_7" class="active col boxx border text-center display-1 px-0 py-5"> </div>
+            <div id="square_8" class="active col boxx border text-center display-1 px-0 py-5"> </div>
+            <div id="square_9" class="active col boxx border text-center display-1 px-0 py-5"> </div>
         </div>    
     </div>
 
-    <div id="score" class="container text-center w-75">
-        <h2 class="my-2 display-2">Score</h2>
-        <div class="border-bottom">
-            <h3 class="d-inline mx-5 display-3 text-left">X</h3>
-            <h3 class="d-inline mx-5 display-3">O</h3>    
-        </div>
+    <div id="reset_btn_container" class="container mt-2 mb-5 text-center w-50">
+        <button id="reset_btn" type="button" class="btn btn-primary">Reset</button>
     </div>
 
-    <div class="container">
-        <button id="reset" type="button" class="btn btn-primary">Reset</button>
+    <div id="score" class="container text-center w-75 border">
+        <h2 class="my-2 display-2 ">Score</h2>
+
+        <div class="border-bottom my-4">
+            <h3 class="d-inline mx-5 display-4 text-left border-right">X</h3>
+            <h3 class="d-inline mx-5 display-4 border-left">O</h3> 
+        </div>
+
+        <p id="player_one_score" class="d-inline mx-5 fs-1">0</p>
+        <div class="vr"></div>
+        <p id="player_two_score" class="d-inline mx-5 fs-1">0</p>
     </div>
+
+    <div id="gameOver_modal" class="modal fade" tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Game Over</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Play Again?</p>
+            </div>
+            <div class="modal-footer">
+              <button id="playAgainBtn" type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
     
 
     <script src="app.js"></script>

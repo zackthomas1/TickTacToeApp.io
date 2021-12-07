@@ -147,6 +147,8 @@ function activateGameOverState(winner)
     console.log("Game Over State Activated");
 
     // show modal
+    let modal = bootstrap.Modal.getOrCreateInstance(document.querySelector('#gameOverModal'))
+    modal.show();
 
     // update score board
     updateScoreBoard(winner)
@@ -220,3 +222,5 @@ document.querySelector("#reset_btn").addEventListener('click', function(e)
 {
     resetGame();  
 });
+
+

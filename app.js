@@ -53,78 +53,103 @@ function updateBoardArr(target, player){
 function checkForWinState()
 {
     // check row win
-    for(let row = 0; row < boardArr.length; row++)
-    {
+    for(let row = 0; row < boardArr.length; row++){
         let rowTotal = 0;
-        for(let col = 0; col < boardArr[0].length; col++)
-        {
+        for(let col = 0; col < boardArr[0].length; col++){
             rowTotal += boardArr[row][col]; 
         }
 
-        if(rowTotal === 3 || rowTotal === -3)
-        {
-            return true;
+        if(rowTotal === 3 || rowTotal === -3){
+            if (rowTotal ===3){
+                return PlayerEnum.one;
+            }else{
+                return PlayerEnum.two;
+            }
         }
     }
 
     // check col win
-    for(let col = 0; col < boardArr[0].length; col++)
-    {
+    for(let col = 0; col < boardArr[0].length; col++){
         let colTotal = 0;
-        for(let row = 0; row < boardArr.length; row++)
-        {
+        for(let row = 0; row < boardArr.length; row++){
             colTotal += boardArr[row][col]; 
         }
 
-        if(colTotal === 3 || colTotal === -3)
-        {
-            return true;
+        if(colTotal === 3 || colTotal === -3){
+            if (colTotal === 3){
+                return PlayerEnum.one;
+            }else{
+                return PlayerEnum.two;
+            }
         }
     }
 
     //check diagonal left-right win
     let leftRightTotal = 0;
-    for(let row = 0; row < boardArr.length; row++)
-    {
+    for(let row = 0; row < boardArr.length; row++){
         let col = row
 
         leftRightTotal += boardArr[row][col]; 
 
-        if(leftRightTotal === 3 || leftRightTotal === -3)
-        {
-            return true;
+        if(leftRightTotal === 3 || leftRightTotal === -3){
+            if (leftRightTotal === 3){
+                return PlayerEnum.one;
+            }else{
+                return PlayerEnum.two;
+            }
         }
     }
 
     //check diagonal right-left win
     let rightLeftTotal = 0;
-    for(let row = 0; row < boardArr.length; row++)
-    {
+    for(let row = 0; row < boardArr.length; row++){
         let col = (boardArr[0].length-1)-row;
 
         rightLeftTotal += boardArr[row][col]; 
 
-        if(rightLeftTotal === 3 || rightLeftTotal === -3)
-        {
-            return true;
+        if(rightLeftTotal === 3 || rightLeftTotal === -3){
+            if (rightLeftTotal === 3){
+                return PlayerEnum.one;
+            }else{
+                return PlayerEnum.two;
+            }
         }
     }
        
-    return false;
+    return PlayerEnum.none
 }
 
-function updateScoreBoard()
+function checkIsBoardFull()
 {
-
+    for (let row of boardArr){
+        for(square of row){
+            if(square === PlayerEnum.none){
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
-function activateGameOverState()
+function updateScoreBoard(winner)
 {
-    console.log("Game OVER!!!!");
+    if(winner === PlayerEnum.one){
+        playerOneScore++; 
+        document.querySelector("#player_one_score").textContent = playerOneScore;
+    }else{
+        playerTwoScore++;
+        document.querySelector("#player_two_score").textContent = playerTwoScore;
+    }
+}
+
+function activateGameOverState(winner)
+{
+    console.log("Game Over State Activated");
 
     // show modal
 
     // update score board
+    updateScoreBoard(winner)
 }
 
 function updateGame (target){
@@ -135,19 +160,25 @@ function updateGame (target){
         return false;
     }
 
+    //update game state
     updateBoardArr(target, activePlayer); 
-
     if(activePlayer == PlayerEnum.one){
+        document.querySelector("#currentActivePlayer").textContent = 'O';
         target.textContent = "X"; 
         activePlayer = PlayerEnum.two;
     }else{ 
+        document.querySelector("#currentActivePlayer").textContent = 'X';
         target.textContent = "O"; 
         activePlayer = PlayerEnum.one;
     }
     target.classList.remove("active");
     
-    if(checkForWinState()){
-        activateGameOverState();
+    // check for game over state
+    let winningPlayer = checkForWinState();
+    if( winningPlayer !== PlayerEnum.none){
+        activateGameOverState(winningPlayer);
+    }else if(checkIsBoardFull()){
+        activateGameOverState(PlayerEnum.none);
     }
 
     return true;
@@ -157,26 +188,32 @@ function resetGame(){
     let boardChildren = document.querySelector("#board").children;
 
     // iterate through each square on the board
-    for(let row of boardChildren){;
+    for(let row of boardChildren){
         let rowChildren = document.querySelector("#" + row.id).children;
         for(let square of rowChildren){
             // console.log(square);
             square.textContent = ""; 
             square.classList.add("active");
-            boardArr = [[PlayerEnum.none,PlayerEnum.none,PlayerEnum.none],
-                        [PlayerEnum.none,PlayerEnum.none,PlayerEnum.none],
-                        [PlayerEnum.none,PlayerEnum.none,PlayerEnum.none],    
-                    ]
         }
     }
+
+    boardArr = [[PlayerEnum.none,PlayerEnum.none,PlayerEnum.none],
+                [PlayerEnum.none,PlayerEnum.none,PlayerEnum.none],
+                [PlayerEnum.none,PlayerEnum.none,PlayerEnum.none],    
+            ];
+
+    activePlayer = PlayerEnum.one; 
+    document.querySelector("#currentActivePlayer").textContent = 'X';
+    playerOneScore = 0; 
+    playerTwoScore = 0;
+    
 }
 
 // event selectors
 document.querySelector("#board").addEventListener('click', function(e){
-    console.info(e.target.id);
+    console.info("Selection Target ID: " + e.target.id);
 
     updateGame(e.target); 
-
 });
 
 document.querySelector("#reset_btn").addEventListener('click', function(e)

@@ -113,9 +113,18 @@ function checkForWinState()
     return false;
 }
 
+function updateScoreBoard()
+{
+
+}
+
 function activateGameOverState()
 {
     console.log("Game OVER!!!!");
+
+    // show modal
+
+    // update score board
 }
 
 function updateGame (target){
@@ -145,25 +154,32 @@ function updateGame (target){
 }
 
 function resetGame(){
-    
+    let boardChildren = document.querySelector("#board").children;
+
+    // iterate through each square on the board
+    for(let row of boardChildren){;
+        let rowChildren = document.querySelector("#" + row.id).children;
+        for(let square of rowChildren){
+            // console.log(square);
+            square.textContent = ""; 
+            square.classList.add("active");
+            boardArr = [[PlayerEnum.none,PlayerEnum.none,PlayerEnum.none],
+                        [PlayerEnum.none,PlayerEnum.none,PlayerEnum.none],
+                        [PlayerEnum.none,PlayerEnum.none,PlayerEnum.none],    
+                    ]
+        }
+    }
 }
 
 // event selectors
-document.querySelector("#board_container").addEventListener('click', function(e){
+document.querySelector("#board").addEventListener('click', function(e){
     console.info(e.target.id);
 
     updateGame(e.target); 
 
-})
+});
 
 document.querySelector("#reset_btn").addEventListener('click', function(e)
 {
-
-})
-
-var myModal = document.getElementById('myModal')
-var myInput = document.getElementById('myInput')
-
-document.getElementById('gameOver_modal').addEventListener('shown.bs.modal', function () {
-  
-})
+    resetGame();  
+});

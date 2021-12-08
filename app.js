@@ -243,8 +243,6 @@ function resetGame(){
 
     activePlayer = PlayerEnum.one; 
     document.querySelector("#currentActivePlayer").textContent = 'X';
-    playerOneScore = 0; 
-    playerTwoScore = 0;
     
     toggleBoardDisable(false);
 

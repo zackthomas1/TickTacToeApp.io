@@ -178,10 +178,17 @@ function activateGameOverState(winner)
 
     // show modal
     let modal = bootstrap.Modal.getOrCreateInstance(document.querySelector('#gameOverModal'))
+    if(winner == PlayerEnum.one){
+        document.querySelector("#winnerTag").textContent = "Xs won.";
+    }else if (winner == PlayerEnum.two){
+        document.querySelector("#winnerTag").textContent = "Os won.";
+    }else{
+        document.querySelector("#winnerTag").textContent = "Tie Game.";
+    }
     modal.show();
 
     // update score board
-    updateScoreBoard(winner)
+    updateScoreBoard(winner);
 }
 
 function updateGame (target){
@@ -243,6 +250,16 @@ function resetGame(){
 
 }
 
+function playAgain()
+{
+    // reset game 
+    resetGame(); 
+
+    // hide game over modal
+    let modal = bootstrap.Modal.getOrCreateInstance(document.querySelector('#gameOverModal'))
+    modal.hide();
+}
+
 // event selectors
 document.querySelector("#board").addEventListener('click', function(e){
     console.info("Selection Target ID: " + e.target.id);
@@ -253,7 +270,6 @@ document.querySelector("#board").addEventListener('click', function(e){
     }else{
         updateGame(e.target); 
     }
-
 });
 
 document.querySelector("#reset_btn").addEventListener('click', function(e)
@@ -261,4 +277,12 @@ document.querySelector("#reset_btn").addEventListener('click', function(e)
     resetGame();  
 });
 
+document.querySelector("#playAgainBtn").addEventListener('click', function(e){
+    playAgain();
+});
 
+document.querySelector("#closeModalBtn").addEventListener('click', function(e){
+    // hide game over modal
+    let modal = bootstrap.Modal.getOrCreateInstance(document.querySelector('#gameOverModal'))
+    modal.hide();
+});

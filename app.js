@@ -193,6 +193,10 @@ function convertTargetElemToBoardArrIndex(target){
 
 function convertArraySelectionToTargetElem(row, col){
 
+    if((row < 0 || row > boardArr.length-1) || (col < 0 || col > boardArr[0].length-1)){
+        throw Error("Index out of bounds");
+    }
+
     let targetDivElemID = "";
     switch(row){
         case 0: 
@@ -207,6 +211,7 @@ function convertArraySelectionToTargetElem(row, col){
                     targetDivElemID = "square_3";
                     break; 
             }
+            break;
         case 1: 
             switch(col){
                 case 0: 
@@ -219,6 +224,7 @@ function convertArraySelectionToTargetElem(row, col){
                     targetDivElemID = "square_6";
                     break; 
             }
+            break;
         case 2: 
             switch(col){
                 case 0: 
@@ -231,6 +237,7 @@ function convertArraySelectionToTargetElem(row, col){
                     targetDivElemID = "square_9";
                     break; 
             }
+            break;
     }
 
     return document.querySelector("#" + targetDivElemID);
@@ -240,8 +247,9 @@ function aiRandomSelection()
 {
     // generate array of available spaces on board
     let avaiableSquares = []
-    for(let row of boardArr){
-        for (let col of row){
+    for(let row = 0; row < boardArr.length; row++){
+        for(let col = 0; col < boardArr[0].length; col++){
+            // console.log("row: " + row + " col: " + col);
             if(boardArr[row][col] === PlayerEnum.none){
                 avaiableSquares.push({row, col});
             }
@@ -250,12 +258,10 @@ function aiRandomSelection()
 
     // randomly select available square
     const move = avaiableSquares[Math.floor(Math.random() * avaiableSquares.length)]
-
-    // convert to div element 
-    const divElem = convertArraySelectionToTargetElem(avaiableSquares[move].row, avaiableSquares[move].col);
+    console.log(move);
 
     // return selection
-    return {"row": avaiableSquares[move].row, "col": avaiableSquares[move].col, "htmlElem" : divElem} ;
+    return {"row": move.row, "col": move.col} ;
 }
 
 function aiMinMaxSelection()
@@ -270,7 +276,8 @@ function aiMove(){
 
     //update game state
     boardArr[selectionObj.row][selectionObj.col] = activePlayer;
-    updateBoardDisplay(selectionObj.htmlElem);
+    const divElem = convertArraySelectionToTargetElem(selectionObj.row, selectionObj.col);
+    updateBoardState(divElem);
     
     // check for game over state
     // REFACTOR: consider encapsulating into function. Since logic is also in playerMove() function.
@@ -280,11 +287,10 @@ function aiMove(){
     }else if(isBoardFull()){
         activateGameOverState(PlayerEnum.none);
     }
-
 }
 
 // REFACTOR: consider deleting function and moving implementation into playerMove
-function updateBoardDisplay(target){
+function updateBoardState(target){
     if(activePlayer == PlayerEnum.one){
         document.querySelector("#currentActivePlayer").textContent = 'O';
         target.textContent = "X"; 
@@ -308,7 +314,7 @@ function playerMove (target){
     //update game state
     const selectionIndexObj = convertTargetElemToBoardArrIndex(target); 
     boardArr[selectionIndexObj.row][selectionIndexObj.col] = activePlayer;
-    updateBoardDisplay(target);
+    updateBoardState(target);
 
     
     // check for game over state
@@ -381,6 +387,10 @@ document.querySelector("#board").addEventListener('click', function(e){
         console.warn("Game disabled. Either a player has won or the board is full. Please reset.")
     }else{
         playerMove(e.target); 
+        
+        if(gameMode === gameModeEnum.ai && !isBoardFull()){
+            aiMove();
+        }
     }
 });
 

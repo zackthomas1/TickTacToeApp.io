@@ -166,40 +166,124 @@ function activateGameOverState(winner)
     updateScoreBoard(winner);
 }
 
-function updateBoardArr(target){
+function convertTargetElemToBoardArrIndex(target){
 
     switch(target.id)
     {
     case "square_1": 
-        boardArr [0][0] = activePlayer; 
-        break;
+        return {"row" : 0, "col": 0};
     case "square_2": 
-        boardArr [0][1] = activePlayer; 
-        break;
-    case "square_3": 
-        boardArr [0][2] = activePlayer; 
-        break;
+        return {"row" : 0, "col": 1};
+    case "square_3":
+        return {"row" : 0, "col": 2};
     case "square_4": 
-        boardArr [1][0] = activePlayer; 
-        break;
+        return {"row" : 1, "col": 0};
     case "square_5": 
-        boardArr [1][1] = activePlayer; 
-        break;
+        return {"row" : 1, "col": 1};
     case "square_6": 
-        boardArr [1][2] = activePlayer; 
-        break;
+        return {"row" : 1, "col": 2};
     case "square_7": 
-        boardArr [2][0] = activePlayer; 
-        break;
+        return {"row" : 2, "col": 0};
     case "square_8": 
-        boardArr [2][1] = activePlayer; 
-        break;
+        return {"row" : 2, "col": 1};
     case "square_9": 
-        boardArr [2][2] = activePlayer; 
-        break;
+        return {"row" : 2, "col": 2};
     }
 }
 
+function convertArraySelectionToTargetElem(row, col){
+
+    let targetDivElemID = "";
+    switch(row){
+        case 0: 
+            switch(col){
+                case 0: 
+                    targetDivElemID = "square_1";
+                    break;
+                case 1: 
+                    targetDivElemID = "square_2";
+                    break;
+                case 2: 
+                    targetDivElemID = "square_3";
+                    break; 
+            }
+        case 1: 
+            switch(col){
+                case 0: 
+                    targetDivElemID = "square_4";
+                    break;
+                case 1: 
+                    targetDivElemID = "square_5";
+                    break;
+                case 2: 
+                    targetDivElemID = "square_6";
+                    break; 
+            }
+        case 2: 
+            switch(col){
+                case 0: 
+                    targetDivElemID = "square_7";
+                    break;
+                case 1: 
+                    targetDivElemID = "square_8";
+                    break;
+                case 2: 
+                    targetDivElemID = "square_9";
+                    break; 
+            }
+    }
+
+    return document.querySelector("#" + targetDivElemID);
+}
+
+function aiRandomSelection()
+{
+    // generate array of available spaces on board
+    let avaiableSquares = []
+    for(let row of boardArr){
+        for (let col of row){
+            if(boardArr[row][col] === PlayerEnum.none){
+                avaiableSquares.push({row, col});
+            }
+        }
+    }
+
+    // randomly select available square
+    const move = avaiableSquares[Math.floor(Math.random() * avaiableSquares.length)]
+
+    // convert to div element 
+    const divElem = convertArraySelectionToTargetElem(avaiableSquares[move].row, avaiableSquares[move].col);
+
+    // return selection
+    return {"row": avaiableSquares[move].row, "col": avaiableSquares[move].col, "htmlElem" : divElem} ;
+}
+
+function aiMinMaxSelection()
+{
+
+}
+
+function aiMove(){
+
+    // Ai 
+    const selectionObj  = aiRandomSelection();
+
+    //update game state
+    boardArr[selectionObj.row][selectionObj.col] = activePlayer;
+    updateBoardDisplay(selectionObj.htmlElem);
+    
+    // check for game over state
+    // REFACTOR: consider encapsulating into function. Since logic is also in playerMove() function.
+    let winningPlayer = isGameWon();
+    if( winningPlayer !== PlayerEnum.none){
+        activateGameOverState(winningPlayer);
+    }else if(isBoardFull()){
+        activateGameOverState(PlayerEnum.none);
+    }
+
+}
+
+// REFACTOR: consider deleting function and moving implementation into playerMove
 function updateBoardDisplay(target){
     if(activePlayer == PlayerEnum.one){
         document.querySelector("#currentActivePlayer").textContent = 'O';
@@ -213,7 +297,7 @@ function updateBoardDisplay(target){
     target.classList.remove("active");
 }
 
-function updateGame (target){
+function playerMove (target){
 
     // check space is empty
     if(!target.classList.contains("active")){
@@ -222,11 +306,13 @@ function updateGame (target){
     }
 
     //update game state
-    updateBoardArr(target); 
-    updateBoardDisplay(target)
+    const selectionIndexObj = convertTargetElemToBoardArrIndex(target); 
+    boardArr[selectionIndexObj.row][selectionIndexObj.col] = activePlayer;
+    updateBoardDisplay(target);
 
     
     // check for game over state
+    // REFACTOR: consider encapsulating into function. Since logic is also in aiMove() function.
     let winningPlayer = isGameWon();
     if( winningPlayer !== PlayerEnum.none){
         activateGameOverState(winningPlayer);
@@ -294,7 +380,7 @@ document.querySelector("#board").addEventListener('click', function(e){
     if(isClassNameOnParentNode(e.target, "disabled") !== null){
         console.warn("Game disabled. Either a player has won or the board is full. Please reset.")
     }else{
-        updateGame(e.target); 
+        playerMove(e.target); 
     }
 });
 

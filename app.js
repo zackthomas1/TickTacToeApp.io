@@ -1,5 +1,10 @@
 // objects and variables
 // ---------------
+const gameModeEnum = {
+    "local" : 0, 
+    "ai" : 1, 
+    "network" : 2,
+}
 
 const PlayerEnum = {
     "none" : 0,
@@ -12,46 +17,13 @@ let boardArr = [[PlayerEnum.none,PlayerEnum.none,PlayerEnum.none],
                 [PlayerEnum.none,PlayerEnum.none,PlayerEnum.none],    
             ]
 
+let gameMode = gameModeEnum.local;
 let activePlayer = PlayerEnum.one; 
 let playerOneScore = 0; 
 let playerTwoScore = 0;
 
 // functions
 // ---------------
-
-function updateBoardArr(target, player){
-
-    switch(target.id)
-    {
-    case "square_1": 
-        boardArr [0][0] = player; 
-        break;
-    case "square_2": 
-        boardArr [0][1] = player; 
-        break;
-    case "square_3": 
-        boardArr [0][2] = player; 
-        break;
-    case "square_4": 
-        boardArr [1][0] = player; 
-        break;
-    case "square_5": 
-        boardArr [1][1] = player; 
-        break;
-    case "square_6": 
-        boardArr [1][2] = player; 
-        break;
-    case "square_7": 
-        boardArr [2][0] = player; 
-        break;
-    case "square_8": 
-        boardArr [2][1] = player; 
-        break;
-    case "square_9": 
-        boardArr [2][2] = player; 
-        break;
-    }
-}
 
 function isGameWon()
 {
@@ -194,16 +166,41 @@ function activateGameOverState(winner)
     updateScoreBoard(winner);
 }
 
-function updateGame (target){
+function updateBoardArr(target){
 
-    // check space is empty
-    if(!target.classList.contains("active")){
-        console.warn("Space has already been selected. Please select an open space.");
-        return false;
+    switch(target.id)
+    {
+    case "square_1": 
+        boardArr [0][0] = activePlayer; 
+        break;
+    case "square_2": 
+        boardArr [0][1] = activePlayer; 
+        break;
+    case "square_3": 
+        boardArr [0][2] = activePlayer; 
+        break;
+    case "square_4": 
+        boardArr [1][0] = activePlayer; 
+        break;
+    case "square_5": 
+        boardArr [1][1] = activePlayer; 
+        break;
+    case "square_6": 
+        boardArr [1][2] = activePlayer; 
+        break;
+    case "square_7": 
+        boardArr [2][0] = activePlayer; 
+        break;
+    case "square_8": 
+        boardArr [2][1] = activePlayer; 
+        break;
+    case "square_9": 
+        boardArr [2][2] = activePlayer; 
+        break;
     }
+}
 
-    //update game state
-    updateBoardArr(target, activePlayer); 
+function updateBoardDisplay(target){
     if(activePlayer == PlayerEnum.one){
         document.querySelector("#currentActivePlayer").textContent = 'O';
         target.textContent = "X"; 
@@ -214,6 +211,20 @@ function updateGame (target){
         activePlayer = PlayerEnum.one;
     }
     target.classList.remove("active");
+}
+
+function updateGame (target){
+
+    // check space is empty
+    if(!target.classList.contains("active")){
+        console.warn("Space has already been selected. Please select an open space.");
+        return false;
+    }
+
+    //update game state
+    updateBoardArr(target); 
+    updateBoardDisplay(target)
+
     
     // check for game over state
     let winningPlayer = isGameWon();
@@ -224,6 +235,18 @@ function updateGame (target){
     }
 
     return true;
+}
+
+function selectGameMode(selection){
+    gameMode = selection; 
+    const gameModeDisplayElem = document.querySelector("#currentGameMode");
+    if (selection === gameModeEnum.local){
+        gameModeDisplayElem.textContent = "2-Player Local"
+    }else if (selection === gameModeEnum.ai){
+        gameModeDisplayElem.textContent = "Computer AI"
+    }else if (selection === gameModeEnum.network){
+        gameModeDisplayElem.textContent = "2-Player Network"
+    }
 }
 
 function resetGame(){
@@ -284,8 +307,45 @@ document.querySelector("#playAgainBtn").addEventListener('click', function(e){
     playAgain();
 });
 
+document.querySelector("#localBtn").addEventListener('click', function(e)
+{
+    selectGameMode(gameModeEnum.local);
+
+    // hide game mode modal
+    let modal = bootstrap.Modal.getOrCreateInstance(document.querySelector('#modeModal'))
+    modal.hide();
+
+});
+
+document.querySelector("#aiBtn").addEventListener('click', function(e)
+{
+    selectGameMode(gameModeEnum.ai);
+
+    // hide game mode modal
+    let modal = bootstrap.Modal.getOrCreateInstance(document.querySelector('#modeModal'))
+    modal.hide();
+
+});
+
+document.querySelector("#networkBtn").addEventListener('click', function(e)
+{
+    selectGameMode(gameModeEnum.network);
+
+    // hide game mode modal
+    let modal = bootstrap.Modal.getOrCreateInstance(document.querySelector('#modeModal'))
+    modal.hide();
+});
+
+
 document.querySelector("#closeModalBtn").addEventListener('click', function(e){
     // hide game over modal
     let modal = bootstrap.Modal.getOrCreateInstance(document.querySelector('#gameOverModal'))
     modal.hide();
+});
+
+window.addEventListener('load', function(e){
+
+    // show game mode modal
+    let modal = bootstrap.Modal.getOrCreateInstance(document.querySelector('#modeModal'))
+    modal.show();
 });

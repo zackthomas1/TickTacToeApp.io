@@ -9,12 +9,10 @@ function resizeAppContainer(){
     let appContainer = document.querySelector("#app_container")
     if(window.innerWidth >= 1400) // xxl and above
     {
-        // appContainer.classList.add("w-50");
-        // appContainer.classList.remove("w-50");
+        appContainer.classList.add("w-50");
     }
     if(window.innerWidth > 768 && window.innerWidth < 1400) // medium to xl
     {
-        appContainer.classList.remove("w-25");
         appContainer.classList.add("w-50");
         appContainer.classList.remove("w-75");
 

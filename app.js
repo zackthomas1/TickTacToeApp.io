@@ -1,5 +1,6 @@
-
 // objects and variables
+// ---------------
+
 const PlayerEnum = {
     "none" : 0,
     "one": 1, 
@@ -16,6 +17,8 @@ let playerOneScore = 0;
 let playerTwoScore = 0;
 
 // functions
+// ---------------
+
 function updateBoardArr(target, player){
 
     switch(target.id)
@@ -259,6 +262,8 @@ function playAgain()
 }
 
 // event selectors
+// ---------------
+
 document.querySelector("#board").addEventListener('click', function(e){
     console.info("Selection Target ID: " + e.target.id);
 

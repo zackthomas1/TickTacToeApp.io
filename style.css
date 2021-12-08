@@ -1,8 +1,14 @@
 .boxx{
+    padding-top: 6.5%;
 
 }
 
 .disabled{
     background-color: hsl(0, 0%, 80%);
     /* background-color: red; */
+}
+
+#board_container{
+    min-width: 200px;
+    max-width: 600px;
 }

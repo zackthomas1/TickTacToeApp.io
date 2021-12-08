@@ -1,9 +1,10 @@
 //functions
 //---------
 
+
 function resizeAppContainer(){
 
-    // change div padding
+
 
     // change containe width
     let appContainer = document.querySelector("#app_container")
@@ -33,12 +34,10 @@ function resizeAppContainer(){
     let squares = document.querySelectorAll(".boxx"); 
     let squareHeight = parseInt(squares[0].offsetWidth) + "px";
     for(let square of squares){
-        console.log(squareHeight);
+        // console.log(squareHeight);
         square.style.height = squareHeight;
-        // square.style.height = 50 + "px";
     }
 }
-
 
 // event listeners
 //----------------

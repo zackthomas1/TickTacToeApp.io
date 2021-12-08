@@ -3,9 +3,6 @@
 
 
 function resizeAppContainer(){
-
-
-
     // change containe width
     let appContainer = document.querySelector("#app_container")
     if(window.innerWidth >= 1400) // xxl and above

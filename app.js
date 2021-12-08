@@ -50,7 +50,7 @@ function updateBoardArr(target, player){
     }
 }
 
-function checkForWinState()
+function isGameWon()
 {
     // check row win
     for(let row = 0; row < boardArr.length; row++){
@@ -119,7 +119,7 @@ function checkForWinState()
     return PlayerEnum.none
 }
 
-function checkIsBoardFull()
+function isBoardFull()
 {
     for (let row of boardArr){
         for(square of row){
@@ -129,6 +129,23 @@ function checkIsBoardFull()
         }
     }
     return true;
+}
+
+function isClassNameOnParentNode(child, className){
+
+    let currentNode = child;
+
+    while(currentNode.parentNode !== null)
+    {
+        // console.log(currentNode);
+        if(currentNode.classList.contains(className)){
+            return currentNode;
+        }
+        currentNode = currentNode.parentNode;
+
+    }
+
+    return null;
 }
 
 function updateScoreBoard(winner)
@@ -142,9 +159,22 @@ function updateScoreBoard(winner)
     }
 }
 
+function toggleBoardDisable(isDisabled)
+{
+    if(isDisabled){
+        document.querySelector("#board").classList.add("disabled");
+    }else{
+        document.querySelector("#board").classList.remove("disabled");
+    }
+
+}
+
 function activateGameOverState(winner)
 {
     console.log("Game Over State Activated");
+
+    // disable game
+    toggleBoardDisable(true);
 
     // show modal
     let modal = bootstrap.Modal.getOrCreateInstance(document.querySelector('#gameOverModal'))
@@ -176,10 +206,10 @@ function updateGame (target){
     target.classList.remove("active");
     
     // check for game over state
-    let winningPlayer = checkForWinState();
+    let winningPlayer = isGameWon();
     if( winningPlayer !== PlayerEnum.none){
         activateGameOverState(winningPlayer);
-    }else if(checkIsBoardFull()){
+    }else if(isBoardFull()){
         activateGameOverState(PlayerEnum.none);
     }
 
@@ -209,13 +239,21 @@ function resetGame(){
     playerOneScore = 0; 
     playerTwoScore = 0;
     
+    toggleBoardDisable(false);
+
 }
 
 // event selectors
 document.querySelector("#board").addEventListener('click', function(e){
     console.info("Selection Target ID: " + e.target.id);
 
-    updateGame(e.target); 
+    // checks if the board has been disabled
+    if(isClassNameOnParentNode(e.target, "disabled") !== null){
+        console.warn("Game disabled. Either a player has won or the board is full. Please reset.")
+    }else{
+        updateGame(e.target); 
+    }
+
 });
 
 document.querySelector("#reset_btn").addEventListener('click', function(e)

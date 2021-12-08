@@ -6,3 +6,7 @@
     max-height: 250px;
 }
 
+.disabled{
+    background-color: hsl(0, 0%, 80%);
+    /* background-color: red; */
+}

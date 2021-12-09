@@ -17,6 +17,7 @@ let boardArr = [[PlayerEnum.none,PlayerEnum.none,PlayerEnum.none],
                 [PlayerEnum.none,PlayerEnum.none,PlayerEnum.none],    
             ]
 
+let computerAIDifficultyLevel = 0;
 let gameMode = gameModeEnum.local;
 let activePlayer = PlayerEnum.one; 
 let playerOneScore = 0; 
@@ -256,6 +257,29 @@ function convertArraySelectionToTargetElem(row, col){
     return document.querySelector("#" + targetDivElemID);
 }
 
+function aiSetDifficulty(levelID){
+    switch(levelID){
+        case 'level-0':
+            computerAIDifficultyLevel = 0;
+            break;
+        case 'level-1':
+            computerAIDifficultyLevel = 20;
+            break;
+        case 'level-2':
+            computerAIDifficultyLevel = 40;
+            break;
+        case 'level-3':
+            computerAIDifficultyLevel = 60;
+            break;
+        case 'level-4':
+            computerAIDifficultyLevel = 80;
+            break;
+        case 'level-5':
+            computerAIDifficultyLevel = 100;
+            break;
+    }
+}
+
 function aiRandomSelection()
 {
     // generate array of available spaces on board
@@ -338,7 +362,6 @@ function aiMinMaxSelection()
                     bestScore = score; 
                     bestMove = {row: i, col: j};
                 }
-                // currentBestScore = max(score, currentBestScore);
             }
         }
     }
@@ -349,8 +372,9 @@ function aiMove()
 {
 
     // Ai 
-    // const selectionObj  = aiRandomSelection();
-    const selectionObj  = aiMinMaxSelection();
+
+    const selectionObj  = aiRandomSelection();
+    // const selectionObj  = aiMinMaxSelection();
 
     //update game state
     boardArr[selectionObj.row][selectionObj.col] = activePlayer;
@@ -454,12 +478,12 @@ document.querySelector("#board").addEventListener('click', function(e){
     if(isClassNameOnParentNode(e.target, "disabled") !== null){
         console.warn("Game disabled. Either a player has won or the board is full. Please reset.")
     }else{
-        playerMove(e.target); 
-        
-        if(gameMode === gameModeEnum.ai && !isBoardFull()){
-            aiMove();
+        if(playerMove(e.target)){
+            if(gameMode === gameModeEnum.ai && !isBoardFull()){
+                aiMove();
+            }
         }
-    }
+    }  
 });
 
 document.querySelector("#reset_btn").addEventListener('click', function(e)
@@ -513,3 +537,14 @@ window.addEventListener('load', function(e){
     let modal = bootstrap.Modal.getOrCreateInstance(document.querySelector('#modeModal'))
     modal.show();
 });
+
+document.querySelector("#difficultyDownMenu").addEventListener('click', function(e){
+    const target = e.target;
+    const dropDownBtn = document.querySelector("#difficultyDropDownBtn");
+    console.log(target.id);
+    dropDownBtn.textContent = target.textContent
+
+    aiSetDifficulty(target.id);
+
+    
+})

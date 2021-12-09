@@ -83,9 +83,30 @@
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" id="localBtn">2-Player Local</button>
-            <button type="button" class="btn btn-primary" id="aiBtn">Computer AI</button>
-            <button type="button" class="btn btn-primary disabled" id="networkBtn">2-Player Network</button>
+            <div class="container-fluid">
+              <div class="row">
+                <button type="button" class="btn btn-primary col mx-1" id="localBtn">2-Player Local</button>
+                <button type="button" class="btn btn-primary col mx-1" id="aiBtn">Computer AI</button>
+                <button type="button" class="btn btn-primary disabled col mx-1" id="networkBtn">2-Player Network</button>
+              </div>
+
+              <div class="row">
+                <div class="dropdown text-center">
+                  <button class="btn btn-secondary dropdown-toggle col-3 mt-2" type="button" id="difficultyDropDownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+                    Difficulty
+                  </button>
+                  <ul id="difficultyDownMenu" class="dropdown-menu" aria-labelledby="difficultyDownMenu">
+                    <li><a id="level-0" class="dropdown-item" href="#">0</a></li>
+                    <li><a id="level-1" class="dropdown-item" href="#">1</a></li>
+                    <li><a id="level-2" class="dropdown-item" href="#">2</a></li>
+                    <li><a id="level-3" class="dropdown-item" href="#">3</a></li>
+                    <li><a id="level-4" class="dropdown-item" href="#">4</a></li>
+                    <li><a id="level-5" class="dropdown-item" href="#">5</a></li>
+                  </ul>
+                </div>
+              </div> 
+            </div>
+
           </div>
         </div>
       </div>

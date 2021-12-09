@@ -168,11 +168,11 @@ function activateGameOverState(winner)
     // show modal
     let modal = bootstrap.Modal.getOrCreateInstance(document.querySelector('#gameOverModal'))
     if(winner == PlayerEnum.one){
-        document.querySelector("#winnerTag").textContent = "Xs won.";
+        document.querySelector("#winnerTag").textContent = " Xs won.";
     }else if (winner == PlayerEnum.two){
-        document.querySelector("#winnerTag").textContent = "Os won.";
+        document.querySelector("#winnerTag").textContent = " Os won.";
     }else{
-        document.querySelector("#winnerTag").textContent = "Tie Game.";
+        document.querySelector("#winnerTag").textContent = " Tie Game.";
     }
     modal.show();
 

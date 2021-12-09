@@ -277,12 +277,45 @@ function aiRandomSelection()
     return {"row": move.row, "col": move.col} ;
 }
 
-function minimax(position, depth, maximizingPlayer)
+function minimax(board, depth, maximizingPlayer)
 {   
     //end condition
     const winner = isGameWon();
-    if(winner !== PlayerEnum.none); 
-        // return winner;
+    if(winner !== PlayerEnum.none){
+        return winner; 
+    }
+
+    // copy board array to not affect current state of board
+    // let boardCopy = board.map(function(arr) {
+    //     return board.slice();
+    // });
+
+    // if maximizingPlayer
+	// 	maxEval = -infinity
+	// 	for each child of position
+	// 		eval = minimax(child, depth - 1, false)
+	// 		maxEval = max(maxEval, eval)
+	// 	return maxEval
+
+    if(maximizingPlayer){
+        let maxEval = -Infinity; 
+        for(let i = 0; i < boardCopy.length; i++){
+            for(let j = 0; j < boardCopy[0].length; j++){
+                if(boardCopy[i][j] === PlayerEnum.none){
+                    boardCopy[i][j] = 
+                    eval = minimax(child, depth - 1, false)
+                }
+            }
+        }
+        maxEval = max(maxEval)
+    }
+ 
+	// else
+	// 	minEval = +infinity
+	// 	for each child of position
+	// 		eval = minimax(child, depth - 1, true)
+	// 		minEval = min(minEval, eval)
+	// 	return minEval
 
     return 1;
     
@@ -290,29 +323,33 @@ function minimax(position, depth, maximizingPlayer)
 
 function aiMinMaxSelection()
 {
-    let currentBestScore = -Infinity;
+    let bestScore = -Infinity;
     let bestMove = {row: 0, col: 0};
-    for(let row = 0; row < boardArr.length; row++){
-        for(let col = 0; col < boardArr[0].length; col++){
-            if(boardArr[row][col] === PlayerEnum.none){
+    for(let i = 0; i < boardArr.length; i++){
+        for(let j = 0; j < boardArr[0].length; j++){
+            if(boardArr[i][j] === PlayerEnum.none){
                
-                boardArr[row][col] = activePlayer;
-                let score = minimax(0,0,true);
-                boardArr[row][col] = PlayerEnum.none;
+                boardArr[i][j] = activePlayer;
+                let score = minimax(boardArr,0,true);
+                boardArr[i][j] = PlayerEnum.none;
 
+                if(score > bestScore){
+                    bestScore = score; 
+                    bestMove = {row: i, col: j};
+                }
                 // currentBestScore = max(score, currentBestScore);
             }
         }
     }
-
-
+    return bestMove;
 }
 
 function aiMove()
 {
 
     // Ai 
-    const selectionObj  = aiRandomSelection();
+    // const selectionObj  = aiRandomSelection();
+    const selectionObj  = aiMinMaxSelection();
 
     //update game state
     boardArr[selectionObj.row][selectionObj.col] = activePlayer;

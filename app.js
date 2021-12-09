@@ -295,7 +295,7 @@ function aiRandomSelection()
 
     // randomly select available square
     const move = avaiableSquares[Math.floor(Math.random() * avaiableSquares.length)]
-    console.log(move);
+    // console.log(move);
 
     // return selection
     return {"row": move.row, "col": move.col} ;
@@ -371,10 +371,16 @@ function aiMinMaxSelection()
 function aiMove()
 {
 
-    // Ai 
-
-    const selectionObj  = aiRandomSelection();
-    // const selectionObj  = aiMinMaxSelection();
+    // AI logic
+    let rnd = Math.floor(Math.random() * 100);
+    let selectionObj = {row: 0, col: 0};
+    if( rnd > computerAIDifficultyLevel){
+        selectionObj  = aiRandomSelection();
+        console.log("AI: random selection")
+    }else{
+        selectionObj  = aiMinMaxSelection();
+        console.log("AI: minimax selection")
+    }
 
     //update game state
     boardArr[selectionObj.row][selectionObj.col] = activePlayer;
@@ -408,7 +414,6 @@ function playerMove (target)
 
     
     // check for game over state
-    // REFACTOR: consider encapsulating into function. Since logic is also in aiMove() function.
     let winningPlayer = isGameWon();
     if( winningPlayer !== PlayerEnum.none){
         activateGameOverState(winningPlayer);
@@ -426,7 +431,7 @@ function selectGameMode(selection)
     if (selection === gameModeEnum.local){
         gameModeDisplayElem.textContent = "2-Player Local"
     }else if (selection === gameModeEnum.ai){
-        gameModeDisplayElem.textContent = "Computer AI"
+        gameModeDisplayElem.innerHTML = "Computer AI" + "<br>Level: " + computerAIDifficultyLevel/20;
     }else if (selection === gameModeEnum.network){
         gameModeDisplayElem.textContent = "2-Player Network"
     }
@@ -479,7 +484,7 @@ document.querySelector("#board").addEventListener('click', function(e){
         console.warn("Game disabled. Either a player has won or the board is full. Please reset.")
     }else{
         if(playerMove(e.target)){
-            if(gameMode === gameModeEnum.ai && !isBoardFull()){
+            if(gameMode === gameModeEnum.ai && !isBoardFull() && isGameWon() === PlayerEnum.none){
                 aiMove();
             }
         }

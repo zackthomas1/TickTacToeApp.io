@@ -293,8 +293,8 @@ function minimax(board, depth, isMaximizingPlayer, maxPlayer)
         for(let i = 0; i < board.length; i++){
             for(let j = 0; j < board[0].length; j++){
                 if(board[i][j] === PlayerEnum.none){
-                    board[i][j] = activePlayer; // set board position
                     activePlayer *= -1; // switch active player
+                    board[i][j] = activePlayer; // set board position
                     let eval = minimax(board, depth + 1, false, maxPlayer);
                     maxEval = Math.max(maxEval, eval);
                     board[i][j] = PlayerEnum.none;  // undo set board position
@@ -309,8 +309,8 @@ function minimax(board, depth, isMaximizingPlayer, maxPlayer)
         for(let i = 0; i < board.length; i++){
             for(let j = 0; j < board[0].length; j++){
                 if(board[i][j] === PlayerEnum.none){
-                    board[i][j] = activePlayer; // set board position
                     activePlayer *= -1; // switch active player
+                    board[i][j] = activePlayer; // set board position
                     let eval = minimax(board, depth + 1, true, maxPlayer);
                     minEval = Math.min(minEval, eval);
                     board[i][j] = PlayerEnum.none; // undo set board position
@@ -330,9 +330,9 @@ function aiMinMaxSelection()
         for(let j = 0; j < boardArr[0].length; j++){
             if(boardArr[i][j] === PlayerEnum.none){
                
-                // boardArr[i][j] = activePlayer;
-                let score = minimax(boardArr,0,true, activePlayer);
-                // boardArr[i][j] = PlayerEnum.none;
+                boardArr[i][j] = activePlayer; // set board position
+                let score = minimax(boardArr,0,false, activePlayer);
+                boardArr[i][j] = PlayerEnum.none; // Undo set board position
 
                 if(score > bestScore){
                     bestScore = score; 

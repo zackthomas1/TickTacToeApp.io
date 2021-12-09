@@ -144,6 +144,19 @@ function toggleBoardDisable(isDisabled)
 
 }
 
+function updateBoardState(target){
+    if(activePlayer == PlayerEnum.one){
+        document.querySelector("#currentActivePlayer").textContent = 'O';
+        target.textContent = "X"; 
+        activePlayer = PlayerEnum.two;
+    }else{ 
+        document.querySelector("#currentActivePlayer").textContent = 'X';
+        target.textContent = "O"; 
+        activePlayer = PlayerEnum.one;
+    }
+    target.classList.remove("active");
+}
+
 function activateGameOverState(winner)
 {
     console.log("Game Over State Activated");
@@ -264,15 +277,82 @@ function aiRandomSelection()
     return {"row": move.row, "col": move.col} ;
 }
 
+function minimax(board, depth, maximizingPlayer)
+{   
+    //end condition
+    const winner = isGameWon();
+    if(winner !== PlayerEnum.none){
+        return winner; 
+    }
+
+    // copy board array to not affect current state of board
+    // let boardCopy = board.map(function(arr) {
+    //     return board.slice();
+    // });
+
+    // if maximizingPlayer
+	// 	maxEval = -infinity
+	// 	for each child of position
+	// 		eval = minimax(child, depth - 1, false)
+	// 		maxEval = max(maxEval, eval)
+	// 	return maxEval
+
+    if(maximizingPlayer){
+        let maxEval = -Infinity; 
+        for(let i = 0; i < boardCopy.length; i++){
+            for(let j = 0; j < boardCopy[0].length; j++){
+                if(boardCopy[i][j] === PlayerEnum.none){
+                    boardCopy[i][j] = 
+                    eval = minimax(child, depth - 1, false)
+                }
+            }
+        }
+        maxEval = max(maxEval)
+    }
+ 
+	// else
+	// 	minEval = +infinity
+	// 	for each child of position
+	// 		eval = minimax(child, depth - 1, true)
+	// 		minEval = min(minEval, eval)
+	// 	return minEval
+
+    return 1;
+    
+}
+
 function aiMinMaxSelection()
 {
+    let bestScore = -Infinity;
+    let bestMove = {row: 0, col: 0};
+    for(let i = 0; i < boardArr.length; i++){
+        for(let j = 0; j < boardArr[0].length; j++){
+            if(boardArr[i][j] === PlayerEnum.none){
+               
+                boardArr[i][j] = activePlayer;
+                let score = minimax(boardArr,0,true);
+                boardArr[i][j] = PlayerEnum.none;
+
+                if(score > bestScore){
+                    bestScore = score; 
+                    bestMove = {row: i, col: j};
+                }
+                // currentBestScore = max(score, currentBestScore);
+            }
+        }
+    }
+
+    return bestMove;
+
 
 }
 
-function aiMove(){
+function aiMove()
+{
 
     // Ai 
-    const selectionObj  = aiRandomSelection();
+    // const selectionObj  = aiRandomSelection();
+    const selectionObj  = aiMinMaxSelection();
 
     //update game state
     boardArr[selectionObj.row][selectionObj.col] = activePlayer;
@@ -289,21 +369,9 @@ function aiMove(){
     }
 }
 
-// REFACTOR: consider deleting function and moving implementation into playerMove
-function updateBoardState(target){
-    if(activePlayer == PlayerEnum.one){
-        document.querySelector("#currentActivePlayer").textContent = 'O';
-        target.textContent = "X"; 
-        activePlayer = PlayerEnum.two;
-    }else{ 
-        document.querySelector("#currentActivePlayer").textContent = 'X';
-        target.textContent = "O"; 
-        activePlayer = PlayerEnum.one;
-    }
-    target.classList.remove("active");
-}
 
-function playerMove (target){
+function playerMove (target)
+{
 
     // check space is empty
     if(!target.classList.contains("active")){
@@ -329,7 +397,8 @@ function playerMove (target){
     return true;
 }
 
-function selectGameMode(selection){
+function selectGameMode(selection)
+{
     gameMode = selection; 
     const gameModeDisplayElem = document.querySelector("#currentGameMode");
     if (selection === gameModeEnum.local){
@@ -341,7 +410,8 @@ function selectGameMode(selection){
     }
 }
 
-function resetGame(){
+function resetGame()
+{
     let boardChildren = document.querySelector("#board").children;
 
     // iterate through each square on the board

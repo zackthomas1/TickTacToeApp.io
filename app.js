@@ -144,6 +144,19 @@ function toggleBoardDisable(isDisabled)
 
 }
 
+function updateBoardState(target){
+    if(activePlayer == PlayerEnum.one){
+        document.querySelector("#currentActivePlayer").textContent = 'O';
+        target.textContent = "X"; 
+        activePlayer = PlayerEnum.two;
+    }else{ 
+        document.querySelector("#currentActivePlayer").textContent = 'X';
+        target.textContent = "O"; 
+        activePlayer = PlayerEnum.one;
+    }
+    target.classList.remove("active");
+}
+
 function activateGameOverState(winner)
 {
     console.log("Game Over State Activated");
@@ -264,12 +277,39 @@ function aiRandomSelection()
     return {"row": move.row, "col": move.col} ;
 }
 
+function minimax(position, depth, maximizingPlayer)
+{   
+    //end condition
+    const winner = isGameWon();
+    if(winner !== PlayerEnum.none); 
+        // return winner;
+
+    return 1;
+    
+}
+
 function aiMinMaxSelection()
 {
+    let currentBestScore = -Infinity;
+    let bestMove = {row: 0, col: 0};
+    for(let row = 0; row < boardArr.length; row++){
+        for(let col = 0; col < boardArr[0].length; col++){
+            if(boardArr[row][col] === PlayerEnum.none){
+               
+                boardArr[row][col] = activePlayer;
+                let score = minimax(0,0,true);
+                boardArr[row][col] = PlayerEnum.none;
+
+                // currentBestScore = max(score, currentBestScore);
+            }
+        }
+    }
+
 
 }
 
-function aiMove(){
+function aiMove()
+{
 
     // Ai 
     const selectionObj  = aiRandomSelection();
@@ -289,21 +329,9 @@ function aiMove(){
     }
 }
 
-// REFACTOR: consider deleting function and moving implementation into playerMove
-function updateBoardState(target){
-    if(activePlayer == PlayerEnum.one){
-        document.querySelector("#currentActivePlayer").textContent = 'O';
-        target.textContent = "X"; 
-        activePlayer = PlayerEnum.two;
-    }else{ 
-        document.querySelector("#currentActivePlayer").textContent = 'X';
-        target.textContent = "O"; 
-        activePlayer = PlayerEnum.one;
-    }
-    target.classList.remove("active");
-}
 
-function playerMove (target){
+function playerMove (target)
+{
 
     // check space is empty
     if(!target.classList.contains("active")){
@@ -329,7 +357,8 @@ function playerMove (target){
     return true;
 }
 
-function selectGameMode(selection){
+function selectGameMode(selection)
+{
     gameMode = selection; 
     const gameModeDisplayElem = document.querySelector("#currentGameMode");
     if (selection === gameModeEnum.local){
@@ -341,7 +370,8 @@ function selectGameMode(selection){
     }
 }
 
-function resetGame(){
+function resetGame()
+{
     let boardChildren = document.querySelector("#board").children;
 
     // iterate through each square on the board

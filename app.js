@@ -128,7 +128,7 @@ function updateScoreBoard(winner)
     if(winner === PlayerEnum.one){
         playerOneScore++; 
         document.querySelector("#player_one_score").textContent = playerOneScore;
-    }else{
+    }else if(winner === PlayerEnum.two){
         playerTwoScore++;
         document.querySelector("#player_two_score").textContent = playerTwoScore;
     }

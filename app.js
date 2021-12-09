@@ -277,48 +277,49 @@ function aiRandomSelection()
     return {"row": move.row, "col": move.col} ;
 }
 
-function minimax(board, depth, maximizingPlayer)
+function minimax(board, depth, isMaximizingPlayer, maxPlayer)
 {   
     //end condition
     const winner = isGameWon();
     if(winner !== PlayerEnum.none){
-        return winner; 
+        return winner * maxPlayer; 
+    }else if(isBoardFull())
+    {
+        return PlayerEnum.none;
     }
 
-    // copy board array to not affect current state of board
-    // let boardCopy = board.map(function(arr) {
-    //     return board.slice();
-    // });
-
-    // if maximizingPlayer
-	// 	maxEval = -infinity
-	// 	for each child of position
-	// 		eval = minimax(child, depth - 1, false)
-	// 		maxEval = max(maxEval, eval)
-	// 	return maxEval
-
-    if(maximizingPlayer){
+    if(isMaximizingPlayer){
         let maxEval = -Infinity; 
-        for(let i = 0; i < boardCopy.length; i++){
-            for(let j = 0; j < boardCopy[0].length; j++){
-                if(boardCopy[i][j] === PlayerEnum.none){
-                    boardCopy[i][j] = 
-                    eval = minimax(child, depth - 1, false)
+        for(let i = 0; i < board.length; i++){
+            for(let j = 0; j < board[0].length; j++){
+                if(board[i][j] === PlayerEnum.none){
+                    board[i][j] = activePlayer; // set board position
+                    activePlayer *= -1; // switch active player
+                    let eval = minimax(board, depth + 1, false, maxPlayer);
+                    maxEval = Math.max(maxEval, eval);
+                    board[i][j] = PlayerEnum.none;  // undo set board position
+                    activePlayer *= -1; // undo switch active player
                 }
             }
         }
-        maxEval = max(maxEval)
+        return maxEval;
     }
- 
-	// else
-	// 	minEval = +infinity
-	// 	for each child of position
-	// 		eval = minimax(child, depth - 1, true)
-	// 		minEval = min(minEval, eval)
-	// 	return minEval
-
-    return 1;
-    
+    else{
+        let minEval = +Infinity; 
+        for(let i = 0; i < board.length; i++){
+            for(let j = 0; j < board[0].length; j++){
+                if(board[i][j] === PlayerEnum.none){
+                    board[i][j] = activePlayer; // set board position
+                    activePlayer *= -1; // switch active player
+                    let eval = minimax(board, depth + 1, true, maxPlayer);
+                    minEval = Math.min(minEval, eval);
+                    board[i][j] = PlayerEnum.none; // undo set board position
+                    activePlayer *= -1; // undo switch active player
+                }
+            }
+        }
+        return minEval;
+    }
 }
 
 function aiMinMaxSelection()
@@ -329,9 +330,9 @@ function aiMinMaxSelection()
         for(let j = 0; j < boardArr[0].length; j++){
             if(boardArr[i][j] === PlayerEnum.none){
                
-                boardArr[i][j] = activePlayer;
-                let score = minimax(boardArr,0,true);
-                boardArr[i][j] = PlayerEnum.none;
+                // boardArr[i][j] = activePlayer;
+                let score = minimax(boardArr,0,true, activePlayer);
+                // boardArr[i][j] = PlayerEnum.none;
 
                 if(score > bestScore){
                     bestScore = score; 

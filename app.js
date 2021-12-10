@@ -180,82 +180,7 @@ function activateGameOverState(winner)
     updateScoreBoard(winner);
 }
 
-function convertTargetElemToBoardArrIndex(target){
 
-    switch(target.id)
-    {
-    case "square_1": 
-        return {"row" : 0, "col": 0};
-    case "square_2": 
-        return {"row" : 0, "col": 1};
-    case "square_3":
-        return {"row" : 0, "col": 2};
-    case "square_4": 
-        return {"row" : 1, "col": 0};
-    case "square_5": 
-        return {"row" : 1, "col": 1};
-    case "square_6": 
-        return {"row" : 1, "col": 2};
-    case "square_7": 
-        return {"row" : 2, "col": 0};
-    case "square_8": 
-        return {"row" : 2, "col": 1};
-    case "square_9": 
-        return {"row" : 2, "col": 2};
-    }
-}
-
-function convertArraySelectionToTargetElem(row, col){
-
-    if((row < 0 || row > boardArr.length-1) || (col < 0 || col > boardArr[0].length-1)){
-        throw Error("Index out of bounds");
-    }
-
-    let targetDivElemID = "";
-    switch(row){
-        case 0: 
-            switch(col){
-                case 0: 
-                    targetDivElemID = "square_1";
-                    break;
-                case 1: 
-                    targetDivElemID = "square_2";
-                    break;
-                case 2: 
-                    targetDivElemID = "square_3";
-                    break; 
-            }
-            break;
-        case 1: 
-            switch(col){
-                case 0: 
-                    targetDivElemID = "square_4";
-                    break;
-                case 1: 
-                    targetDivElemID = "square_5";
-                    break;
-                case 2: 
-                    targetDivElemID = "square_6";
-                    break; 
-            }
-            break;
-        case 2: 
-            switch(col){
-                case 0: 
-                    targetDivElemID = "square_7";
-                    break;
-                case 1: 
-                    targetDivElemID = "square_8";
-                    break;
-                case 2: 
-                    targetDivElemID = "square_9";
-                    break; 
-            }
-            break;
-    }
-
-    return document.querySelector("#" + targetDivElemID);
-}
 
 function aiSetDifficulty(levelID){
     switch(levelID){
@@ -373,18 +298,69 @@ function aiMove()
 
     // AI logic
     let rnd = Math.floor(Math.random() * 100);
-    let selectionObj = {row: 0, col: 0};
+    let selection = {row: 0, col: 0};
     if( rnd > computerAIDifficultyLevel){
-        selectionObj  = aiRandomSelection();
+        selection  = aiRandomSelection();
         console.log("AI: random selection")
     }else{
-        selectionObj  = aiMinMaxSelection();
+        selection  = aiMinMaxSelection();
         console.log("AI: minimax selection")
     }
 
     //update game state
-    boardArr[selectionObj.row][selectionObj.col] = activePlayer;
-    const divElem = convertArraySelectionToTargetElem(selectionObj.row, selectionObj.col);
+    boardArr[selection.row][selection.col] = activePlayer;
+
+
+    const divElem = ((row, col) => {
+        if((row < 0 || row > boardArr.length-1) || (col < 0 || col > boardArr[0].length-1)){
+            throw Error("Index out of bounds");
+        }
+    
+        let targetDivElemID = "";
+        switch(row){
+            case 0: 
+                switch(col){
+                    case 0: 
+                        targetDivElemID = "square_1";
+                        break;
+                    case 1: 
+                        targetDivElemID = "square_2";
+                        break;
+                    case 2: 
+                        targetDivElemID = "square_3";
+                        break; 
+                }
+                break;
+            case 1: 
+                switch(col){
+                    case 0: 
+                        targetDivElemID = "square_4";
+                        break;
+                    case 1: 
+                        targetDivElemID = "square_5";
+                        break;
+                    case 2: 
+                        targetDivElemID = "square_6";
+                        break; 
+                }
+                break;
+            case 2: 
+                switch(col){
+                    case 0: 
+                        targetDivElemID = "square_7";
+                        break;
+                    case 1: 
+                        targetDivElemID = "square_8";
+                        break;
+                    case 2: 
+                        targetDivElemID = "square_9";
+                        break; 
+                }
+                break;
+        }
+    
+        return document.querySelector("#" + targetDivElemID);
+    })(selection.row, selection.col);
     updateBoardState(divElem);
     
     // check for game over state
@@ -408,8 +384,30 @@ function playerMove (target)
     }
 
     //update game state
-    const selectionIndexObj = convertTargetElemToBoardArrIndex(target); 
-    boardArr[selectionIndexObj.row][selectionIndexObj.col] = activePlayer;
+    const selectionIndex = ((t)=> {
+        switch(t.id)
+        {
+        case "square_1": 
+            return {"row" : 0, "col": 0};
+        case "square_2": 
+            return {"row" : 0, "col": 1};
+        case "square_3":
+            return {"row" : 0, "col": 2};
+        case "square_4": 
+            return {"row" : 1, "col": 0};
+        case "square_5": 
+            return {"row" : 1, "col": 1};
+        case "square_6": 
+            return {"row" : 1, "col": 2};
+        case "square_7": 
+            return {"row" : 2, "col": 0};
+        case "square_8": 
+            return {"row" : 2, "col": 1};
+        case "square_9": 
+            return {"row" : 2, "col": 2};
+        }
+    })(target);
+    boardArr[selectionIndex.row][selectionIndex.col] = activePlayer;
     updateBoardState(target);
 
     

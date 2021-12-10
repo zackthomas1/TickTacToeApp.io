@@ -107,23 +107,6 @@ function isBoardFull()
     return true;
 }
 
-function isClassNameOnParentNode(child, className){
-
-    let currentNode = child;
-
-    while(currentNode.parentNode !== null)
-    {
-        // console.log(currentNode);
-        if(currentNode.classList.contains(className)){
-            return currentNode;
-        }
-        currentNode = currentNode.parentNode;
-
-    }
-
-    return null;
-}
-
 function updateScoreBoard(winner)
 {
     if(winner === PlayerEnum.one){
@@ -178,31 +161,6 @@ function activateGameOverState(winner)
 
     // update score board
     updateScoreBoard(winner);
-}
-
-
-
-function aiSetDifficulty(levelID){
-    switch(levelID){
-        case 'level-0':
-            computerAIDifficultyLevel = 0;
-            break;
-        case 'level-1':
-            computerAIDifficultyLevel = 20;
-            break;
-        case 'level-2':
-            computerAIDifficultyLevel = 40;
-            break;
-        case 'level-3':
-            computerAIDifficultyLevel = 60;
-            break;
-        case 'level-4':
-            computerAIDifficultyLevel = 80;
-            break;
-        case 'level-5':
-            computerAIDifficultyLevel = 100;
-            break;
-    }
 }
 
 function aiRandomSelection()
@@ -310,8 +268,7 @@ function aiMove()
     //update game state
     boardArr[selection.row][selection.col] = activePlayer;
 
-
-    const divElem = ((row, col) => {
+    const divElem = (function (row, col) {
         if((row < 0 || row > boardArr.length-1) || (col < 0 || col > boardArr[0].length-1)){
             throw Error("Index out of bounds");
         }
@@ -384,7 +341,7 @@ function playerMove (target)
     }
 
     //update game state
-    const selectionIndex = ((t)=> {
+    const selectionIndex = (function(t) {
         switch(t.id)
         {
         case "square_1": 
@@ -461,16 +418,6 @@ function resetGame()
 
 }
 
-function playAgain()
-{
-    // reset game 
-    resetGame(); 
-
-    // hide game over modal
-    let modal = bootstrap.Modal.getOrCreateInstance(document.querySelector('#gameOverModal'))
-    modal.hide();
-}
-
 // event selectors
 // ---------------
 
@@ -478,7 +425,23 @@ document.querySelector("#board").addEventListener('click', function(e){
     console.info("Selection Target ID: " + e.target.id);
 
     // checks if the board has been disabled
-    if(isClassNameOnParentNode(e.target, "disabled") !== null){
+    const isClassNameOnParentNode = (function (child, className){
+
+        let currentNode = child;
+    
+        while(currentNode.parentNode !== null)
+        {
+            // console.log(currentNode);
+            if(currentNode.classList.contains(className)){
+                return currentNode;
+            }
+            currentNode = currentNode.parentNode;
+    
+        }
+    
+        return null;
+    })(e.target, "disabled");
+    if(isClassNameOnParentNode !== null){
         console.warn("Game disabled. Either a player has won or the board is full. Please reset.")
     }else{
         if(playerMove(e.target)){
@@ -495,7 +458,15 @@ document.querySelector("#reset_btn").addEventListener('click', function(e)
 });
 
 document.querySelector("#playAgainBtn").addEventListener('click', function(e){
-    playAgain();
+    // play again
+    (function() {
+        // reset game 
+        resetGame(); 
+
+        // hide game over modal
+        let modal = bootstrap.Modal.getOrCreateInstance(document.querySelector('#gameOverModal'))
+        modal.hide();
+    })();
 });
 
 document.querySelector("#localBtn").addEventListener('click', function(e)
@@ -547,7 +518,27 @@ document.querySelector("#difficultyDownMenu").addEventListener('click', function
     console.log(target.id);
     dropDownBtn.textContent = target.textContent
 
-    aiSetDifficulty(target.id);
+    // set difficulty level
+    switch(target.id){
+        case 'level-0':
+            computerAIDifficultyLevel = 0;
+            break;
+        case 'level-1':
+            computerAIDifficultyLevel = 20;
+            break;
+        case 'level-2':
+            computerAIDifficultyLevel = 40;
+            break;
+        case 'level-3':
+            computerAIDifficultyLevel = 60;
+            break;
+        case 'level-4':
+            computerAIDifficultyLevel = 80;
+            break;
+        case 'level-5':
+            computerAIDifficultyLevel = 100;
+            break;
+    }
 
     
 })

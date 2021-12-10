@@ -184,61 +184,58 @@ function aiRandomSelection()
     return {"row": move.row, "col": move.col} ;
 }
 
-function minimax(board, depth, isMaximizingPlayer, maxPlayer)
-{   
-    //end condition
-    const winner = isGameWon();
-    if(winner !== PlayerEnum.none){
-        return winner * maxPlayer; 
-    }else if(isBoardFull())
-    {
-        return PlayerEnum.none;
-    }
-
-    if(isMaximizingPlayer){
-        let maxEval = -Infinity; 
-        for(let i = 0; i < board.length; i++){
-            for(let j = 0; j < board[0].length; j++){
-                if(board[i][j] === PlayerEnum.none){
-                    activePlayer *= -1; // switch active player
-                    board[i][j] = activePlayer; // set board position
-                    let eval = minimax(board, depth + 1, false, maxPlayer);
-                    maxEval = Math.max(maxEval, eval);
-                    board[i][j] = PlayerEnum.none;  // undo set board position
-                    activePlayer *= -1; // undo switch active player
-                }
-            }
-        }
-        return maxEval;
-    }
-    else{
-        let minEval = +Infinity; 
-        for(let i = 0; i < board.length; i++){
-            for(let j = 0; j < board[0].length; j++){
-                if(board[i][j] === PlayerEnum.none){
-                    activePlayer *= -1; // switch active player
-                    board[i][j] = activePlayer; // set board position
-                    let eval = minimax(board, depth + 1, true, maxPlayer);
-                    minEval = Math.min(minEval, eval);
-                    board[i][j] = PlayerEnum.none; // undo set board position
-                    activePlayer *= -1; // undo switch active player
-                }
-            }
-        }
-        return minEval;
-    }
-}
-
-function aiMinMaxSelection()
+function aiMinMaxSelection(currentActivePlayerParam)
 {
     let bestScore = -Infinity;
     let bestMove = {row: 0, col: 0};
+
     for(let i = 0; i < boardArr.length; i++){
         for(let j = 0; j < boardArr[0].length; j++){
-            if(boardArr[i][j] === PlayerEnum.none){
-               
+            if(boardArr[i][j] === PlayerEnum.none){            
+                // minimax recussion 
                 boardArr[i][j] = activePlayer; // set board position
-                let score = minimax(boardArr,0,false, activePlayer);
+                let score = (function minimax(board, depth, isMaximizing, maximizingPlayer)
+                {                       
+                    //end condition
+                    const winner = isGameWon();
+                    if(winner !== PlayerEnum.none){
+                        return winner * maximizingPlayer; 
+                    }else if(isBoardFull()){
+                        return PlayerEnum.none;
+                    }
+                    
+                    if(isMaximizing){
+                        let maxEval = -Infinity; 
+                        for(let i = 0; i < board.length; i++){
+                            for(let j = 0; j < board[0].length; j++){
+                                if(board[i][j] === PlayerEnum.none){
+                                    currentActivePlayerParam *= -1; // switch active player
+                                    board[i][j] = currentActivePlayerParam; // set board position
+                                    let eval = minimax(board, depth + 1, false, maximizingPlayer);
+                                    maxEval = Math.max(maxEval, eval);
+                                    board[i][j] = PlayerEnum.none;  // undo set board position
+                                    currentActivePlayerParam *= -1; // undo switch active player
+                                }
+                            }
+                        }
+                        return maxEval;
+                    }else{
+                        let minEval = +Infinity; 
+                        for(let i = 0; i < board.length; i++){
+                            for(let j = 0; j < board[0].length; j++){
+                                if(board[i][j] === PlayerEnum.none){
+                                    currentActivePlayerParam *= -1; // switch active player
+                                    board[i][j] = currentActivePlayerParam; // set board position
+                                    let eval = minimax(board, depth + 1, true, maximizingPlayer);
+                                    minEval = Math.min(minEval, eval);
+                                    board[i][j] = PlayerEnum.none; // undo set board position
+                                    currentActivePlayerParam *= -1; // undo switch active player
+                                }
+                            }
+                        }
+                        return minEval;
+                    }
+                })(boardArr,0,false, currentActivePlayerParam);
                 boardArr[i][j] = PlayerEnum.none; // Undo set board position
 
                 if(score > bestScore){
@@ -261,7 +258,7 @@ function aiMove()
         selection  = aiRandomSelection();
         console.log("AI: random selection")
     }else{
-        selection  = aiMinMaxSelection();
+        selection  = aiMinMaxSelection(activePlayer);
         console.log("AI: minimax selection")
     }
 
@@ -330,10 +327,8 @@ function aiMove()
     }
 }
 
-
 function playerMove (target)
 {
-
     // check space is empty
     if(!target.classList.contains("active")){
         console.warn("Space has already been selected. Please select an open space.");
@@ -497,7 +492,6 @@ document.querySelector("#networkBtn").addEventListener('click', function(e)
     let modal = bootstrap.Modal.getOrCreateInstance(document.querySelector('#modeModal'))
     modal.hide();
 });
-
 
 document.querySelector("#closeModalBtn").addEventListener('click', function(e){
     // hide game over modal
